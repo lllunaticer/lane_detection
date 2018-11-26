@@ -42,7 +42,7 @@ def region_of_interest(img, vertices):
     return masked_image
 
 
-def draw_lines(img, lines, color=[255, 0, 0], thickness=2):
+def draw_lines(img, lines, color=[255, 0, 0], thickness=10):
     # print(lines)
     for line in lines:
         for x1, y1, x2, y2 in line:
@@ -116,7 +116,7 @@ def pipeline(img, vertices, threshold_angle, hline_show):
     # Apply Gaussian Blur:noise smooth noise
     gray_blur = gaussian_blur(gray, 3)
     # Apply canny edge detector
-    edges = canny(gray_blur, 50, 60)  # 这个阈值的选取，主要靠经验 50,60或者10,90这两个之间选择
+    edges = canny(gray_blur, 30, 75)  # 这个阈值的选取，主要靠经验
     # apply mask
     imshape = img.shape
     masked = region_of_interest(edges, vertices)
@@ -124,7 +124,7 @@ def pipeline(img, vertices, threshold_angle, hline_show):
     # Hough Tramsform lines
     if hline_show['hlines'] == 'on':
         hlines_img = np.zeros(imshape, dtype=np.uint8)
-        draw_lines(hlines_img, h_lines, color=[255, 0, 0], thickness=2)
+        draw_lines(hlines_img, h_lines, color=[255, 0, 0], thickness=20)
     else:
         hlines_img = np.zeros(imshape, dtype=np.uint8)
     # Angle High Pass filter
@@ -169,9 +169,11 @@ for img_name in f:
     img = mpimg.imread(dir_img+img_name)
     hline_show = {'hlines': 'on', 'avg': 'off', 'steps': 'on'}
     imshape = img.shape
-    # vertices 圈定了车道线的范围
-    vertices = np.array([[(100, imshape[0]), (390, imshape[0]*0.65), (620, imshape[0]*0.65), (imshape[1], imshape[0]),
-                          (100, imshape[0])]], dtype=np.int32)
+    # vertices = np.array([[(100, imshape[0]), (390, imshape[0]*0.65), (620, imshape[0]*0.65), (imshape[1], imshape[0]),
+    #                       (100, imshape[0])]], dtype=np.int32)
+    vertices = np.array(
+        [[(575,627), (128, 830), (1500, 900), (1098, 627),
+          ]], dtype=np.int32)   # vertices 圈定了车道线的范围
     threshold_angle = 25
     lines_img = pipeline(img, vertices, threshold_angle, hline_show)
     plt.imshow(lines_img)
