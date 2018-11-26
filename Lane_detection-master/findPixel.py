@@ -6,7 +6,7 @@ img = cv2.imread("2018-11-25.jpg")
 def on_canny():
     x = cv2.getTrackbarPos("x", "s")
     y = cv2.getTrackbarPos("y", "s")
-    edges = cv2.circle(img,(x,y),10,(0,0,255),-1)
+    edges = cv2.circle(img,(x,y),5,(0,0,255),-1)
     cv2.imshow("s", edges)
 
 cv2.namedWindow("s", cv2.WINDOW_GUI_NORMAL)
