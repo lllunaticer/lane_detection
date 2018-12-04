@@ -1,16 +1,16 @@
 import cv2
 import numpy as np
 
-img = cv2.imread("2018-11-25.jpg")
+img = cv2.imread("night1.jpg")
 
 def on_canny():
-    mix = cv2.getTrackbarPos("mix", "s")
+    min = cv2.getTrackbarPos("min", "s")
     max = cv2.getTrackbarPos("max", "s")
-    edges = cv2.Canny(img, mix, max)
+    edges = cv2.Canny(img, min, max)
     cv2.imshow("s", edges)
 
 cv2.namedWindow("s")
-cv2.createTrackbar("mix", "s", 0,255, on_canny)
+cv2.createTrackbar("min", "s", 0,255, on_canny)
 cv2.createTrackbar("max", "s", 0,255, on_canny)
 
 while(1):

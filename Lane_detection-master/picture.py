@@ -116,11 +116,11 @@ def pipeline(img, vertices, threshold_angle, hline_show):
     # Apply Gaussian Blur:noise smooth noise
     gray_blur = gaussian_blur(gray, 3)
     # Apply canny edge detector
-    edges = canny(gray_blur, 30, 75)  # 这个阈值的选取，主要靠经验
+    edges = canny(gray_blur, 48, 24)  # 这个阈值的选取，主要靠经验
     # apply mask
     imshape = img.shape
     masked = region_of_interest(edges, vertices)
-    h_lines = hough_lines(masked, rho=1, theta=np.pi / 180, threshold=25, min_line_len=10, max_line_gap=10)  # 检测直线
+    h_lines = hough_lines(masked, rho=1, theta=np.pi / 180, threshold=25, min_line_len=20, max_line_gap=10)  # 检测直线
     # Hough Tramsform lines
     if hline_show['hlines'] == 'on':
         hlines_img = np.zeros(imshape, dtype=np.uint8)
@@ -161,20 +161,19 @@ def show_img(ax, img, cmap, title):
     ax.set_title(title)
 
 
-f = os.listdir(dir_img)
-f = [fname for fname in f if 'jpeg' in fname or 'jpg' in fname]
-for img_name in f:
-    # reading in an imag
-    print('Image:', img_name)
-    img = mpimg.imread(dir_img+img_name)
-    hline_show = {'hlines': 'on', 'avg': 'off', 'steps': 'on'}
-    imshape = img.shape
-    # vertices = np.array([[(100, imshape[0]), (390, imshape[0]*0.65), (620, imshape[0]*0.65), (imshape[1], imshape[0]),
-    #                       (100, imshape[0])]], dtype=np.int32)
-    vertices = np.array(
-        [[(575,627), (128, 830), (1500, 900), (1098, 627),
-          ]], dtype=np.int32)   # vertices 圈定了车道线的范围
-    threshold_angle = 25
-    lines_img = pipeline(img, vertices, threshold_angle, hline_show)
-    plt.imshow(lines_img)
-    plt.show()
+
+img_name = 'night1.jpg'
+# reading in an imag
+img = mpimg.imread(img_name)
+hline_show = {'hlines': 'on', 'avg': 'off', 'steps': 'on'}
+imshape = img.shape
+vertices = np.array([[(imshape[1]*0.2,imshape[0]*0.6),(imshape[1]*0.4,imshape[0]*0.6),\
+                         (imshape[1]*0.9,imshape[0]*0.8),(imshape[1]*0.1,imshape[0]*0.9),\
+                         ]], dtype=np.int32)
+    # vertices = np.array(
+    #     [[(575,627), (128, 830), (1500, 900), (1098, 627),
+    #       ]], dtype=np.int32)   # vertices 圈定了车道线的范围
+threshold_angle = 15
+lines_img = pipeline(img, vertices, threshold_angle, hline_show)
+plt.imshow(lines_img)
+plt.show()
